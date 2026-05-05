@@ -1,0 +1,21 @@
+<script>
+
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            if (evt.detail && evt.detail.xhr) {
+                const hxTrigger = evt.detail.xhr.getResponseHeader('HX-Trigger');
+                if (!hxTrigger) return;
+                try {
+                    const triggers = JSON.parse(hxTrigger);
+
+                    if (triggers.uploadSuccess) {
+                        Swal.fire({
+                            title: "Pavyko!",
+                            text: "blabla.",
+                            icon: "success",
+                            confirmButtonColor: "#4F46E5"
+                        });
+                    }
+                } catch (e) {}
+            }
+        });
+</script>

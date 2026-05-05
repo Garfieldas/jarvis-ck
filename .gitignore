@@ -1,0 +1,13 @@
+venv
+.env_services
+.env
+mypy.ini
+.mypy_cache/
+Procfile.tailwind
+
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+exclude = ^(.*__pycache__.*|.*migrations.*)$
+.DS_Store

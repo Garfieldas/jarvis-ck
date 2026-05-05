@@ -1,0 +1,18 @@
+<div>
+  <label for="{{ field.id_for_label }}" class="mb-2 block text-sm font-medium text-slate-700">
+    {{ field.label }}
+  </label>
+  <input
+    id="{{ field.id_for_label }}"
+    name="{{ field.name }}"
+    type="{{ field.field.widget.input_type }}"
+    value="{{ field.value|default_if_none:'' }}"
+    {% if field.field.widget.attrs.placeholder %}placeholder="{{ field.field.widget.attrs.placeholder }}"{% endif %}
+    {% if field.field.widget.attrs.autocomplete %}autocomplete="{{ field.field.widget.attrs.autocomplete }}"{% endif %}
+    class="block w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+    {% if field.field.required %}required{% endif %}
+  />
+  {% if field.errors %}
+    <p class="mt-2 text-sm text-red-600">{{ field.errors|join:', ' }}</p>
+  {% endif %}
+</div>

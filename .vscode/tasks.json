@@ -1,0 +1,112 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Python: create venv",
+      "type": "shell",
+      "command": "python -m venv venv",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Python: install requirements",
+      "type": "shell",
+      "command": "${workspaceFolder}/venv/bin/python -m pip install -r requirements.txt -r requirements_dev.txt",
+      "windows": {
+        "command": "${workspaceFolder}\\venv\\Scripts\\python.exe -m pip install -r requirements.txt -r requirements_dev.txt"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Django: makemigrations",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} manage.py makemigrations",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Django: migrate",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} manage.py migrate",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Django: rqworker --with-scheduler",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} manage.py rqworker --with-scheduler",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create super user",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} manage.py createsuperuser",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+      {
+      "label": "up dev stack",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.yml up -d --build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+      {
+      "label": "stop dev stack",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.yml stop",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create requirements.txt",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} -m pip freeze > requirements.txt",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Django: tailwind dev",
+      "type": "shell",
+      "command": "${command:python.interpreterPath} manage.py tailwind start",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "PATH": "${workspaceFolder}/venv/bin:${env:PATH}",
+          "VIRTUAL_ENV": "${workspaceFolder}/venv"
+        }
+      },
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

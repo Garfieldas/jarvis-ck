@@ -1,0 +1,47 @@
+{% load static %}
+
+<div class="relative z-50 lg:hidden" role="dialog" aria-modal="true" x-show="sidebarOpen" x-cloak>
+  <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" @click="sidebarOpen = false"></div>
+</div>
+
+<aside class="fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white px-5 py-4 shadow-2xl transition-transform duration-200 ease-out lg:translate-x-0 lg:shadow-none" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" aria-label="Main navigation" :aria-hidden="sidebarOpen ? 'false' : 'true'">
+  <div class="flex h-14 items-center justify-between">
+    <a href="{% url 'home' %}" class="flex items-center gap-3">
+      <img src="{% static 'img/logo.png' %}" alt="Jarvis logo" class="h-9 w-9 rounded-lg object-cover" />
+      <span class="text-base font-semibold text-slate-900">Jarvis</span>
+    </a>
+    <button type="button" class="inline-flex items-center justify-center rounded-md p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-700 lg:hidden" @click="sidebarOpen = false">
+      <span class="sr-only">Close sidebar</span>
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+        <path d="m6 6 12 12M18 6 6 18" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <nav class="mt-8 flex flex-1 flex-col">
+    <ul role="list" class="space-y-1.5">
+      <li>
+        <a href="{% url 'home' %}" class="flex items-center gap-3 rounded-xl bg-slate-100 px-3 py-2.5 text-sm font-medium text-slate-900">
+          <svg class="h-5 w-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="7" height="7" rx="1.25" />
+            <rect x="13.5" y="3.5" width="7" height="7" rx="1.25" />
+            <rect x="3.5" y="13.5" width="7" height="7" rx="1.25" />
+            <rect x="13.5" y="13.5" width="7" height="7" rx="1.25" />
+          </svg>
+          Home
+        </a>
+      </li>
+    </ul>
+
+    {% if request.user.is_superuser %}
+      <div class="mt-auto pt-6">
+        <a href="{% url 'admin:index' %}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-slate-700">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M9 12h6M12 9v6M7.75 4h8.5A2.25 2.25 0 0 1 18.5 6.25v11.5A2.25 2.25 0 0 1 16.25 20h-8.5A2.25 2.25 0 0 1 5.5 17.75V6.25A2.25 2.25 0 0 1 7.75 4Z" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Admin
+        </a>
+      </div>
+    {% endif %}
+  </nav>
+</aside>
