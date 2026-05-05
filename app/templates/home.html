@@ -3,4 +3,89 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<div class="mx-auto max-w-5xl space-y-6">
+	<section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+		<h1 class="text-2xl font-semibold text-slate-900">Jarvis AI Lab</h1>
+		<p class="mt-2 text-sm text-slate-600">
+			Train the CDK2 inhibitor model from <span class="font-medium">jarvis-ai</span> and run molecule predictions from this Django UI.
+		</p>
+	</section>
+
+	{% if ai_error %}
+		<section class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+			{{ ai_error }}
+		</section>
+	{% endif %}
+
+	<section class="grid gap-6 lg:grid-cols-2">
+		<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+			<h2 class="text-lg font-semibold text-slate-900">1. Train Model</h2>
+			<p class="mt-1 text-sm text-slate-600">This will fetch/process data and train a new model checkpoint.</p>
+
+			<form method="post" class="mt-4 space-y-3">
+				{% csrf_token %}
+				<input type="hidden" name="action" value="train">
+				<label class="block text-sm font-medium text-slate-700" for="{{ train_form.num_epochs.id_for_label }}">{{ train_form.num_epochs.label }}</label>
+				{{ train_form.num_epochs }}
+				{% if train_form.num_epochs.help_text %}
+					<p class="text-xs text-slate-500">{{ train_form.num_epochs.help_text }}</p>
+				{% endif %}
+				{% if train_form.num_epochs.errors %}
+					<p class="text-xs text-rose-700">{{ train_form.num_epochs.errors|join:', ' }}</p>
+				{% endif %}
+
+				<button type="submit" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
+					Start Training
+				</button>
+			</form>
+
+			{% if train_result %}
+				<div class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+					<p class="font-medium">Training completed.</p>
+					<p>Rows: {{ train_result.num_rows }}</p>
+					<p>Valid fingerprints: {{ train_result.num_valid_fingerprints }}</p>
+					<p>Epochs trained: {{ train_result.num_epochs }}</p>
+					<p>Best validation AUC: {{ train_result.best_val_auc|floatformat:4 }}</p>
+					<p>Model saved at: {{ train_result.model_path }}</p>
+				</div>
+			{% endif %}
+		</article>
+
+		<article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+			<h2 class="text-lg font-semibold text-slate-900">2. Predict Molecule Activity</h2>
+			<p class="mt-1 text-sm text-slate-600">Run one-molecule inference using the latest trained model.</p>
+
+			<form method="post" class="mt-4 space-y-3">
+				{% csrf_token %}
+				<input type="hidden" name="action" value="predict">
+
+				<label class="block text-sm font-medium text-slate-700" for="{{ predict_form.smiles.id_for_label }}">{{ predict_form.smiles.label }}</label>
+				{{ predict_form.smiles }}
+				{% if predict_form.smiles.errors %}
+					<p class="text-xs text-rose-700">{{ predict_form.smiles.errors|join:', ' }}</p>
+				{% endif %}
+
+				<label class="block text-sm font-medium text-slate-700" for="{{ predict_form.threshold.id_for_label }}">{{ predict_form.threshold.label }}</label>
+				{{ predict_form.threshold }}
+				{% if predict_form.threshold.errors %}
+					<p class="text-xs text-rose-700">{{ predict_form.threshold.errors|join:', ' }}</p>
+				{% endif %}
+
+				<button type="submit" class="inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
+					Predict
+				</button>
+			</form>
+
+			{% if predict_result %}
+				<div class="mt-4 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+					<p class="font-medium">Prediction result</p>
+					<p>SMILES: {{ predict_result.smiles }}</p>
+					<p>Probability: {{ predict_result.probability|floatformat:4 }}</p>
+					<p>Class: {{ predict_result.prediction }}</p>
+					<p>Active: {{ predict_result.active|yesno:"Yes,No" }}</p>
+				</div>
+			{% endif %}
+		</article>
+	</section>
+</div>
 {% endblock %}

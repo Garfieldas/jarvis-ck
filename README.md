@@ -16,6 +16,30 @@ For development, run these when needed:
 - **Django: rqworker --with-scheduler** (background worker)
 - Start app server from **Run and Debug** using **Python Debugger: Django**
 
+## Jarvis AI training + UI integration
+
+The home page now includes a **Jarvis AI Lab** section where you can:
+
+1. Train the CDK2 model from the `jarvis-ai` pipeline
+2. Predict activity for a single SMILES molecule
+
+### One-time dependency setup
+
+Install AI dependencies into the same virtual environment used by Django:
+
+```bash
+./venv/bin/python -m pip install -r jarvis-ai/requirements.txt
+```
+
+### Usage
+
+1. Log in to Django app
+2. Open `/`
+3. In **Train Model**, choose epochs and start training
+4. After training completes, use **Predict Molecule Activity**
+
+If dependencies are missing or no trained model exists yet, the UI displays a clear error message.
+
 ## Required environment file
 
 Create a `.env` file in the project root before running the app. Example:
