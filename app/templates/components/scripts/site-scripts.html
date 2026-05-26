@@ -1,5 +1,8 @@
 <script>
     (function () {
+        let overlayDelayTimer = null;
+        const OVERLAY_DELAY_MS = 500;
+
         function showError(message) {
             if (!message) return;
 
@@ -59,7 +62,23 @@
             }
         }
 
+        function scheduleOverlay() {
+            if (overlayDelayTimer) {
+                clearTimeout(overlayDelayTimer);
+            }
+
+            overlayDelayTimer = setTimeout(function () {
+                showOverlay();
+                overlayDelayTimer = null;
+            }, OVERLAY_DELAY_MS);
+        }
+
         function hideOverlay() {
+            if (overlayDelayTimer) {
+                clearTimeout(overlayDelayTimer);
+                overlayDelayTimer = null;
+            }
+
             const loadingOverlay = document.getElementById("ai-loading-overlay");
             if (!loadingOverlay) return;
             loadingOverlay.classList.remove("flex");
@@ -73,7 +92,7 @@
 
         function startLoadingState(form) {
             if (!form) return;
-            showOverlay();
+            scheduleOverlay();
             const submitButton = form.querySelector("button[type='submit']");
             if (!submitButton) return;
 
