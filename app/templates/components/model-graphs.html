@@ -1,0 +1,29 @@
+<section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+	<div class="flex items-center justify-between gap-4">
+		<h3 class="text-lg font-semibold text-slate-900">Model Graphs</h3>
+		<button
+			type="button"
+			class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+			hx-get="{% url 'model-graphs' %}"
+			hx-target="#model-graphs-container"
+			hx-swap="innerHTML"
+		>
+			Refresh
+		</button>
+	</div>
+
+	{% if graphs %}
+		<div class="mt-4 space-y-3">
+			{% for graph in graphs %}
+				<article class="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+					<p class="text-sm font-medium text-slate-700">{{ graph.name }}</p>
+					<a href="{% url 'model-graph-image' graph.filename %}" target="_blank" rel="noopener" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100">
+						Open Graph
+					</a>
+				</article>
+			{% endfor %}
+		</div>
+	{% else %}
+		<p class="mt-3 text-sm text-slate-600">No saved graphs found yet. Train the model first.</p>
+	{% endif %}
+</section>

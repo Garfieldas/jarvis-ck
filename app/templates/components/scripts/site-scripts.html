@@ -1,21 +1,126 @@
 <script>
+    (function () {
+        function showError(message) {
+            if (!message) return;
 
-        document.body.addEventListener('htmx:afterRequest', function(evt) {
-            if (evt.detail && evt.detail.xhr) {
-                const hxTrigger = evt.detail.xhr.getResponseHeader('HX-Trigger');
-                if (!hxTrigger) return;
-                try {
-                    const triggers = JSON.parse(hxTrigger);
-
-                    if (triggers.uploadSuccess) {
-                        Swal.fire({
-                            title: "Pavyko!",
-                            text: "blabla.",
-                            icon: "success",
-                            confirmButtonColor: "#4F46E5"
-                        });
-                    }
-                } catch (e) {}
+            if (window.Swal && typeof window.Swal.fire === "function") {
+                window.Swal.fire({
+                    title: "Something went wrong",
+                    text: message,
+                    icon: "error",
+                    confirmButtonColor: "#1e293b"
+                });
+                return;
             }
+
+            window.alert(message);
+        }
+
+        function parseAndShowUiErrors(rootElement) {
+            const scope = rootElement || document;
+            const errorsScript = scope.querySelector("#ui-errors-data");
+            if (!errorsScript || !errorsScript.textContent) {
+                return;
+            }
+
+            try {
+                const errors = JSON.parse(errorsScript.textContent);
+                if (Array.isArray(errors) && errors.length > 0) {
+                    showError(errors.join("\n"));
+                }
+            } catch (err) {
+                showError("Unable to parse an error response.");
+            }
+        }
+
+        function getAiFormFromEvent(event) {
+            const sourceElement = (event.detail && event.detail.elt) || event.target;
+            if (!sourceElement || typeof sourceElement.closest !== "function") {
+                return null;
+            }
+
+            return sourceElement.closest("form[data-ai-submit='true']");
+        }
+
+        function showOverlay() {
+            const loadingOverlay = document.getElementById("ai-loading-overlay");
+            if (!loadingOverlay) return;
+            loadingOverlay.classList.remove("hidden");
+            loadingOverlay.classList.add("flex");
+        }
+
+        function hideOverlay() {
+            const loadingOverlay = document.getElementById("ai-loading-overlay");
+            if (!loadingOverlay) return;
+            loadingOverlay.classList.remove("flex");
+            loadingOverlay.classList.add("hidden");
+        }
+
+        function startLoadingState(form) {
+            if (!form) return;
+            showOverlay();
+            const submitButton = form.querySelector("button[type='submit']");
+            if (!submitButton) return;
+
+            if (!submitButton.dataset.originalText) {
+                submitButton.dataset.originalText = submitButton.textContent || "";
+            }
+
+            submitButton.disabled = true;
+            submitButton.classList.add("opacity-70", "cursor-not-allowed");
+            const loadingText = submitButton.getAttribute("data-loading-text");
+            if (loadingText) {
+                submitButton.textContent = loadingText;
+            }
+        }
+
+        function finishLoadingState(form) {
+            if (!form) return;
+            const submitButton = form.querySelector("button[type='submit']");
+            if (!submitButton) return;
+
+            submitButton.disabled = false;
+            submitButton.classList.remove("opacity-70", "cursor-not-allowed");
+            if (submitButton.dataset.originalText) {
+                submitButton.textContent = submitButton.dataset.originalText;
+                delete submitButton.dataset.originalText;
+            }
+        }
+
+        parseAndShowUiErrors(document);
+
+        document.body.addEventListener("htmx:beforeRequest", function (event) {
+            const form = getAiFormFromEvent(event);
+            if (!form) return;
+
+            startLoadingState(form);
         });
+
+        document.body.addEventListener("htmx:afterRequest", function (event) {
+            const form = getAiFormFromEvent(event);
+            if (!form) return;
+
+            finishLoadingState(form);
+            hideOverlay();
+        });
+
+        document.body.addEventListener("htmx:afterOnLoad", function () {
+            hideOverlay();
+        });
+
+        document.body.addEventListener("htmx:afterSwap", function (event) {
+            parseAndShowUiErrors(event.target || document);
+            hideOverlay();
+        });
+
+        document.body.addEventListener("htmx:responseError", function () {
+            hideOverlay();
+            showError("Request failed. Please try again.");
+        });
+
+        document.body.addEventListener("htmx:sendError", function () {
+            hideOverlay();
+            showError("Request could not be sent. Check your connection and retry.");
+        });
+    })();
 </script>
