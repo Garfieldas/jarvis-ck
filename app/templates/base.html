@@ -15,8 +15,16 @@
 </head>
 
 <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' class="h-full bg-slate-50 text-slate-900 antialiased" x-data="{ sidebarOpen: false }">
-    <div id="ai-loading-overlay" class="fixed inset-0 z-[2147483647] hidden items-center justify-center bg-white px-4">
-        <div class="flex min-h-56 w-full max-w-2xl items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-10 py-8 shadow-sm">
+    <audio id="ai-loading-audio" preload="auto" loop>
+        <source src="{% static 'music/enigma.mp3' %}" type="audio/mpeg" />
+    </audio>
+    <div
+        id="ai-loading-overlay"
+        class="fixed inset-0 z-[2147483647] hidden items-center justify-center px-4"
+    >
+        <img src="{% static 'img/loading.gif' %}" alt="Loading background" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="absolute inset-0 bg-white/35"></div>
+        <div class="relative flex min-h-56 w-full max-w-2xl items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white/90 px-10 py-8 shadow-sm backdrop-blur-[1px]">
             <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-slate-700"></div>
             <p class="text-sm font-medium text-slate-700">Processing request. Please wait...</p>
         </div>

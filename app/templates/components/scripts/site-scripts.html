@@ -47,6 +47,16 @@
             if (!loadingOverlay) return;
             loadingOverlay.classList.remove("hidden");
             loadingOverlay.classList.add("flex");
+
+            const loadingAudio = document.getElementById("ai-loading-audio");
+            if (!loadingAudio) return;
+            loadingAudio.loop = true;
+            const playPromise = loadingAudio.play();
+            if (playPromise && typeof playPromise.catch === "function") {
+                playPromise.catch(function () {
+                    // Browser autoplay restrictions may block playback until user gesture.
+                });
+            }
         }
 
         function hideOverlay() {
@@ -54,6 +64,11 @@
             if (!loadingOverlay) return;
             loadingOverlay.classList.remove("flex");
             loadingOverlay.classList.add("hidden");
+
+            const loadingAudio = document.getElementById("ai-loading-audio");
+            if (!loadingAudio) return;
+            loadingAudio.pause();
+            loadingAudio.currentTime = 0;
         }
 
         function startLoadingState(form) {
