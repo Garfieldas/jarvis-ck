@@ -29,6 +29,23 @@ def _jarvis_model_dir() -> Path:
 	return Path(settings.BASE_DIR) / "jarvis-ai" / "models"
 
 
+def _available_graphs() -> list[dict[str, str]]:
+	model_dir = _jarvis_model_dir()
+	graphs: list[dict[str, str]] = []
+
+	for filename in sorted(ALLOWED_GRAPH_FILES):
+		file_path = model_dir / filename
+		if file_path.exists() and file_path.is_file():
+			graphs.append(
+				{
+					"name": filename.replace("_", " ").replace(".png", "").title(),
+					"filename": filename,
+				}
+			)
+
+	return graphs
+
+
 def _collect_form_errors(*forms) -> list[str]:
 	messages: list[str] = []
 	for form in forms:
@@ -135,24 +152,24 @@ def home(request: HttpRequest) -> HttpResponse:
 
 @login_required
 def model_graphs(request: HttpRequest) -> HttpResponse:
-	model_dir = _jarvis_model_dir()
-	graphs: list[dict[str, str]] = []
-
-	for filename in sorted(ALLOWED_GRAPH_FILES):
-		file_path = model_dir / filename
-		if file_path.exists() and file_path.is_file():
-			graphs.append(
-				{
-					"name": filename.replace("_", " ").replace(".png", "").title(),
-					"filename": filename,
-				}
-			)
-
 	return render(
 		request,
 		"components/model-graphs.html",
 		{
-			"graphs": graphs,
+			"graphs": _available_graphs(),
+		},
+	)
+
+
+@login_required
+def model_graphs_page(request: HttpRequest) -> HttpResponse:
+	return render(
+		request,
+		"model-graphs-page.html",
+		{
+			"title": "Model Graphs",
+			"metaDescription": "Saved model graphs",
+			"graphs": _available_graphs(),
 		},
 	)
 

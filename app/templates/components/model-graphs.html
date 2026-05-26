@@ -1,15 +1,9 @@
-<section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+<section id="model-graphs-section" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
 	<div class="flex items-center justify-between gap-4">
 		<h3 class="text-lg font-semibold text-slate-900">Model Graphs</h3>
-		<button
-			type="button"
-			class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-			hx-get="{% url 'model-graphs' %}"
-			hx-target="#model-graphs-container"
-			hx-swap="innerHTML"
-		>
+		<a href="{% url 'model-graphs-page' %}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
 			Refresh
-		</button>
+		</a>
 	</div>
 
 	{% if graphs %}
