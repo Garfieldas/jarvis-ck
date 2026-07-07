@@ -8,12 +8,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/sweet_alert.min.css' %}">
     <style>[x-cloak]{display:none!important;}</style>
     {% block extra_css %} {% endblock %}
     {% tailwind_css %}
 </head>
 
 <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}' class="h-full bg-slate-50 text-slate-900 antialiased" x-data="{ sidebarOpen: false }">
+    <audio id="ai-loading-audio" preload="auto" loop>
+        <source src="{% static 'music/enigma.mp3' %}" type="audio/mpeg" />
+    </audio>
+    <div
+        id="ai-loading-overlay"
+        class="fixed inset-0 z-[2147483647] hidden items-center justify-center px-4"
+    >
+        <img src="{% static 'img/loading.gif' %}" alt="Loading background" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="absolute inset-0 bg-white/35"></div>
+        <div class="relative flex min-h-56 w-full max-w-2xl items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white/90 px-10 py-8 shadow-sm backdrop-blur-[1px]">
+            <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-200 border-t-slate-700"></div>
+            <p class="text-sm font-medium text-slate-700">Processing request. Please wait...</p>
+        </div>
+    </div>
     {% include 'components/navigation/side/sidebar.html' %}
     <div class="min-h-full lg:pl-72">
         {% include 'components/navigation/top/header.html' %}
@@ -26,7 +41,9 @@
     </div>
 
     <script src="{% static 'js/alpine_min.js' %}"></script>
+    <script src="{% static 'js/sweet_alert_min.js' %}"></script>
     <script src="{% static 'js/htmx_min.js' %}"></script>
+    {% include 'components/scripts/site-scripts.html' %}
 </body>
 
 </html>

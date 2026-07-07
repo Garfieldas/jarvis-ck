@@ -18,13 +18,16 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from django.urls import include, path
-from app.views import AuthLoginView, RegisterView, home
+from app.views import AuthLoginView, RegisterView, home, model_graph_image, model_graphs, model_graphs_page
 
 urlpatterns = [
     path('', home, name='home'),
     path('login/', AuthLoginView.as_view(), name='login'),
     path('register/', RegisterView.as_view(), name='register'),
     path('logout/', LogoutView.as_view(next_page='home'), name='logout'),
+    path('model-graphs/page/', model_graphs_page, name='model-graphs-page'),
+    path('model-graphs/', model_graphs, name='model-graphs'),
+    path('model-graphs/<str:filename>/', model_graph_image, name='model-graph-image'),
     path('admin/', admin.site.urls),
     path('django-rq/', include('django_rq.urls')),
     path('select2/', include('django_select2.urls')),
